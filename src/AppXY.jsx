@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./AppXY.css";
 
 export default function AppXY() {
+  // for test commit;
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const mouseMove = (event) => {
