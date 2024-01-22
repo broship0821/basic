@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import AppMentorButton from "./AppMentorButton";
+import personReducer from "./reducer/person-reducer";
 
 const initalPerson = {
   name: "차은우",
@@ -21,38 +22,50 @@ export default function AppMentors() {
   // 만약 변경해야 하면 새로운 값, 새로운 객체로 새롭게 만들어야 함
   // 이유는 리액트는 변수 참조값의 주소가 바껴야지만 변화를 인식하고 ui 를 업데이트 해줌
   // 변수 참조값 주소는 안 바뀌고 참조값 안에서 내용이 바뀐다고 ui를 바꿔주지는 않음
-  const [person, setPerson] = useState(initalPerson);
+
+  // const [person, setPerson] = useState(initalPerson);
+  const [person, dispatch] = useReducer(personReducer, initalPerson);
+
   const handleUpdate = () => {
     const prevName = prompt(`change who?`);
     const current = prompt(`change what?`);
-    setPerson((prev) => ({
-      ...prev,
-      mentors: prev.mentors.map((mentor) => {
-        if (mentor.name === prevName)
-          return {
-            ...mentor,
-            name: current,
-          };
-        else return mentor;
-      }),
-    }));
-    // ...prev 라는 새로운 객체를 만들었고 , 그 안에서 map 을 통해 새로운 배열을 만듬
-    // 이렇게 새로운 객체, 새로운 배열을 만들어서 넣어줘야함
+    // // 1. setPerson --------------
+    // setPerson((prev) => ({
+    //   ...prev,
+    //   mentors: prev.mentors.map((mentor) => {
+    //     if (mentor.name === prevName)
+    //       return {
+    //         ...mentor,
+    //         name: current,
+    //       };
+    //     else return mentor;
+    //   }),
+    // }));
+    // // ...prev 라는 새로운 객체를 만들었고 , 그 안에서 map 을 통해 새로운 배열을 만듬
+    // // 이렇게 새로운 객체, 새로운 배열을 만들어서 넣어줘야함
+    // 2. dispatch
+    dispatch({ type: "updated", prevName, current });
   };
   const handleAdd = () => {
     const name = prompt(`write name`);
     const title = prompt(`please write the title`);
-    setPerson((prev) => ({
-      ...prev,
-      mentors: [...prev.mentors, { name, title }],
-    }));
+    // // 1. setPerson --------------
+    // setPerson((prev) => ({
+    //   ...prev,
+    //   mentors: [...prev.mentors, { name, title }],
+    // }));
+    // 2. dispatch
+    dispatch({ type: "added", name, title });
   };
   const handleDelete = () => {
     const name = prompt(`write deleted persons name`);
-    setPerson((prev) => ({
-      ...prev,
-      mentors: prev.mentors.filter((mentor) => mentor.name !== name),
-    }));
+    // // 1. setPerson --------------
+    // setPerson((prev) => ({
+    //   ...prev,
+    //   mentors: prev.mentors.filter((mentor) => mentor.name !== name),
+    // }));
+    // 2. dispatch
+    dispatch({ type: "deleted", name });
   };
 
   return (
